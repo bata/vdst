@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% set active_page = 'start' %}
+
+{% block content %}
+
+	<h2 class="headline">{{ registry.get('semester_title') }}</h2>
+	{{ registry.get('semester_text') | raw }}
+
+    {% for month, entries in program %}
+    <p class="prog_month">{{ month }}</p>
+    <table class="table table-striped">
+		<tbody>
+			{% for entry in entries %}
+	    	<tr>
+	        	<td>{{ entry.day_numeric }}.</td>
+	        	<td>{{ entry.day_written }}</td>
+	        	<td>{{ entry.start_time }} {{ entry.temporae }}</td>
+	        	<td>{{ entry.text }}</td>
+	        	<td>{{ entry.importance }}</td>
+	    	</tr>
+	    	{% endfor %}
+    	</tbody>
+	</table>
+    {% endfor %}
+		
+                    
+{% endblock %}

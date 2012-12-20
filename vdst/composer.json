@@ -1,0 +1,15 @@
+{
+    "autoload": {
+        "psr-0": { "VDSt": "src/" }
+    },
+
+    "require": {
+        "silex/silex": "1.0.*",
+        "eluceo/ical": "dev-master",
+        "doctrine/dbal": "2.2.*",
+        "twig/twig": "1.*",
+        "symfony/security": "2.1.*"
+    },
+    
+    "minimum-stability": "dev"
+}

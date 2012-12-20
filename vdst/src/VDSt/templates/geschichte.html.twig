@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% set active_page = 'geschichte' %}
+
+{% block content %}
+
+	<h2 class="headline">Geschichte</h2>
+
+    {{ registry.get('geschichte') | raw }}
+                    
+{% endblock %}
