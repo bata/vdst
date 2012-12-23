@@ -23,3 +23,15 @@ fieldset
 {
 	margin-top: 20px;
 }
+
+div#subnav
+{
+	margin-top: 20px;
+}
+
+.legendToggle
+{
+	float: right;
+	margin-top: 20px;
+	cursor: pointer;
+}

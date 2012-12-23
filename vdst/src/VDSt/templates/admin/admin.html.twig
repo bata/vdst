@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% set active_page = 'vorstand' %}
+
+{% block content %}
+
+    <div class="row">
+        
+        {# content #}
+        <div class="span9">
+            {% block admin_content %}{% endblock %}
+        </div>
+        
+        {# subnav #}
+        <div class="span3">
+            <div id="subnav" class="well">
+                <ul class="nav nav-list">
+                
+                    <li class="active"><a href="#">Semesterprogramm</a></li>
+                    <li class="divider"></li>
+                    
+                    <li class="nav-header">Über den VDSt</li>
+                    <li><a href="#">Geschichte</a></li>
+                    <li><a href="#">Prinzipien</a></li>
+                    <li><a href="#">Politische Bildung</a></li>
+                    <li><a href="#">Presse</a></li>
+                    <li><a href="#">Verband</a></li>
+                    <li class="divider"></li>
+                    
+                    <li><a href="#">Galerie</a></li>
+                    <li><a href="#">Wohnen</a></li>
+                    <li><a href="#">Kontakt</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">IT-Support</a></li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+                    
+{% endblock %}
+
+{% block javascripts %}
+	
+	{{ parent() }}
+	
+	<script type="text/javascript">
+
+        $(document).ready(function() {
+
+        	// toggle init
+    		$('.legendToggle').click(function() {
+
+        		$(this).parent().parent().find('.toggleContent').toggle();
+        		$(this).toggleClass('icon-plus-sign');
+        		$(this).toggleClass('icon-minus-sign');
+    		    
+    		});
+        	
+        });
+	
+	</script>
+	
+{% endblock %}

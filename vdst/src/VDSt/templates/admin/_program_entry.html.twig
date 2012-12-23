@@ -1,26 +1,26 @@
 <div class="modal hide fade">
     <div class="modal-header">
     	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    	<h3>Programmeintrag {{ entry.id ? '#'~entry.id : 'erstellen' }} ({{ registry.get('semester_title') }})</h3>
+    	<h3>Programmeintrag #{{ entry.id }} ({{ entry.semester }})</h3>
     </div>
     <div class="modal-body">
-    	<form id="entry" class="form-horizontal" action="/vdst/admin/entry/save" method="POST">
+    	<form id="entry" class="form-horizontal" action="/index.php/admin/program/entry/save" method="POST">
 		    <div class="control-group">
 			    <label class="control-label" for="date">Datum</label>
 			    <div class="controls">
-			    	<input type="text" name="date" id="date" value="{% if entry.id %}{{ entry.date | date('d.m.Y') }}{% endif %}">
+			    	<input type="text" name="date" id="date" value="{{ entry.date | date('d.m.Y') }}">
 			    </div>
 		    </div>
 		    <div class="control-group">
 			    <label class="control-label" for="time">Uhrzeit</label>
 			    <div class="controls">
-			    	<input type="text" name="time" id="time" value="{% if entry.id %}{{ entry.date | date('H:i') }}{% endif %}">
+			    	<input type="text" name="time" id="time" value="{{ entry.date | date('H:i') }}">
 			    </div>
 		    </div>
 		    <div class="control-group">
 			    <label class="control-label" for="text">Text</label>
 			    <div class="controls">
-			    	<input type="text" name="text" id="text" value="{% if entry.id %}{{ entry.text }}{% endif %}">
+			    	<input type="text" name="text" id="text" value="{{ entry.text }}">
 			    </div>
 		    </div>
 		    <div class="control-group">
@@ -31,8 +31,8 @@
 			    	<label class="radio"><input name="importance" type="radio" value="ho" {{ entry.importance == 'ho' ? 'checked' : '' }}> Hochoffiziell (ho)</label>
 			    </div>
 		    </div>
-		    <input type="hidden" name="semester_title" value="{{ registry.get('semester_title') }}"/>
-			{% if entry.id %}<input type="hidden" name="id" value="{{ entry.id }}"/>{% endif %}
+			<input type="hidden" name="id" value="{{ entry.id }}"/>
+			<input type="hidden" name="semester" value="{{ entry.semester }}"/>
 	    </form>
     </div>
     <div class="modal-footer">

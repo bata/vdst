@@ -63,18 +63,18 @@ $app->get('/start', function() use ($app, $twig) {
 	
 	return $twig->render('semesterprogramm.html.twig', array( 
 		'registry' => $registry,
-		'program' => $formattedEntries 
+		'program' => $formattedEntries
 	));
 	
 });
 
-// geschichte route
-$app->get('/geschichte', function() use ($app, $twig) {
+// vdst route
+$app->get('/vdst', function() use ($app, $twig) {
 
 	$registry = new VDSt\Entity\Registry($app['db']);
 	
 	return $twig->render('geschichte.html.twig', array(
-		'registry' => $registry		
+		'registry' => $registry,
 	));
 
 });
@@ -85,45 +85,39 @@ $app->get('/admin', function() use ($app, $twig) {
 	$registry = new VDSt\Entity\Registry($app['db']);
 	$program = VDSt\Entity\Program::fetchBySemester($app['db'], $registry->get('semester_title'));
 	
-	return $twig->render('admin.html.twig', array(
+	return $twig->render('admin/program.html.twig', array(
 		'registry' => $registry,
 		'program' => $program
 	));
 
 });
 
-// save semesterprogramm/einstellungen
-$app->post('/admin/save', function() use ($app) {
+// save program/einstellungen
+$app->post('/admin/program/save', function() use ($app) {
 	
 	$registry = new VDSt\Entity\Registry($app['db']);
 	$registry->set('semester_title', $app['request']->get('semester_title'));
 	$registry->set('semester_text', $app['request']->get('semester_text'));
-	$registry->set('geschichte', $app['request']->get('geschichte'));
 	
-	return $app->redirect('/vdst/admin');
+	return $app->redirect('/index.php/admin');
 	
 });
 
 // fetch program entry
-$app->post('/admin/entry/fetch/{id}', function($id) use ($app, $twig) {
+$app->post('/admin/program/entry/fetch/{id}', function($id) use ($app, $twig) {
 	
-	$registry = new VDSt\Entity\Registry($app['db']);
-	$entry = ($id != 'new') ? VDSt\Entity\Program::fetchById($app['db'], $id) : new VDSt\Entity\Program();
-
-	return $twig->render('_program_entry.html.twig', array(
-		'registry' => $registry,
+	$entry = VDSt\Entity\Program::fetchById($app['db'], $id);
+	
+	return $twig->render('admin/_program_entry.html.twig', array(
 		'entry' => $entry
 	));
 
 });
 
 // save program entry
-$app->post('/admin/entry/save', function() use ($app) {
+$app->post('/admin/program/entry/save', function() use ($app) {
 
-	$entry = new VDSt\Entity\Program();
-	if ($app['request']->get('id')) {
-		$entry->id = $app['request']->get('id');
-	}
+	$entry = VDSt\Entity\Program::fetchById($app['db'], $app['request']->get('id'));
 	
 	$date = trim($app['request']->get('date'));
 	$time = trim($app['request']->get('time'));
@@ -132,16 +126,16 @@ $app->post('/admin/entry/save', function() use ($app) {
 	$entry->date = $dateTime;
 	$entry->text = trim($app['request']->get('text'));
 	$entry->importance = $app['request']->get('importance');
-	$entry->semester = $app['request']->get('semester_title');
+	$entry->semester = $app['request']->get('semester');
 	
 	VDSt\Entity\Program::save($app['db'], $entry);
 
-	return $app->redirect('/vdst/admin');
+	return $app->redirect('/index.php/admin');
 
 });
 
 // delete program entry
-$app->post('/admin/entry/delete/{id}', function($id) use ($app) {
+$app->post('/admin/program/entry/delete/{id}', function($id) use ($app) {
 	
 	VDSt\Entity\Program::delete($app['db'], $id);
 

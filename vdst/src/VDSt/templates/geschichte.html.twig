@@ -1,10 +1,32 @@
 {% extends 'base.html.twig' %}
-{% set active_page = 'geschichte' %}
+
+{# main nav #}
+{% set mainActive = 'vdst' %}
+
+{# sub nav #}
+{% set subNav = [ ['geschichte','Geschichte'], ['prinzipien','Prinzipien'], ['politischebildung','Politische Bildung'], ['presse','Presse'], ['verband','Verband']] %}
 
 {% block content %}
 
-	<h2 class="headline">Geschichte</h2>
+    <h2 class="headline">Über den VDSt</h2>
+    <p><strong>Teaser Text, wird immer angezeigt.</strong> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
 
-    {{ registry.get('geschichte') | raw }}
+    <div id="subnav">
+        <ul class="nav nav-tabs">
+        {% for item in subNav %}
+    		<li {% if loop.first %} class="active" {% endif %}>
+    		    <a data-toggle="tab" href="#{{ item[0] }}">{{ item[1] }}</a>
+            </li>
+    	{% endfor %}
+        </ul>
+        <div class="tab-content">
+        {% for item in subNav %}
+            <div class="tab-pane {% if loop.first %} active {% endif %}" id="{{ item[0] }}">
+                <h3>{{ item[1] }}</h3>
+                <p>Blah</p>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
                     
 {% endblock %}

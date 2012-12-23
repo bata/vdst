@@ -1,19 +1,19 @@
-{% set navigation_bar = [['start', 'Semesterprogramm'], ['geschichte', 'Geschichte'] ] %}
-{% set active_page = active_page|default('index') %}
+{% set mainNav = [ ['start','Semesterprogramm'], ['vdst','Über den VDSt'], ['galerie','Galerie'], ['wohnen','Wohnen'], ['kontakt','Kontakt'] ] %}
+{% set mainActive = mainActive|default('start') %}
 
 <!DOCTYPE html>
 <html lang="de">
     <head>
         <meta charset="utf-8" />
         <title>VDSt Berlin & Charlottenburg</title>
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="/vdst/css/base.css" rel="stylesheet">
+        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/base.css" rel="stylesheet">
     </head>
     <body>
         <div id="wrapper" class="container">
             <div class="row">
                 <div id="header" class="span12">
-                    <img src="/vdst/images/wappen.png"/>
+                    <img src="/images/wappen.png"/>
                     <h1>VDSt Berlin & Charlottenburg</h1>
                     <hr/>
                 </div>
@@ -21,8 +21,8 @@
                 	<div class="navbar">
 					    <div class="navbar-inner">
 						    <ul class="nav">
-						    {% for item in navigation_bar %}
-								<li {% if item[0] == active_page %} class="active" {% endif%}><a href="/vdst/{{ item[0] }}">{{ item[1] }}</a></li>
+						    {% for item in mainNav %}
+								<li {% if item[0] == mainActive %} class="active" {% endif %}><a href="/index.php/{{ item[0] }}">{{ item[1] }}</a></li>
 							{% endfor %}
 						    </ul>
 					    </div>
@@ -31,12 +31,15 @@
                 </div>
                 <div id="footer" class="span12">
                 	<hr/>
-                	<p>&copy; {{ 'now' | date('Y') }} VDSt Berlin & Charlottenburg - Impressum - <a href="/vdst/admin">Admin</a></p>
+                	<p>&copy; {{ 'now' | date('Y') }} VDSt Berlin & Charlottenburg - Impressum - <a href="/index.php/admin">Admin</a></p>
                 </div>
             </div>
         </div>
         
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            <script src="/vendor/jquery/jquery-1.8.3.js" type="text/javascript"></script>
+	        <script src="/vendor/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        {% endblock %}
         
     </body>
 </html>
