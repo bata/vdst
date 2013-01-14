@@ -36,7 +36,7 @@ $app['security.firewalls'] = array(
 );
 
 // home route
-$app->get('/start', function() use ($app, $twig) {
+$app->get('', function() use ($app, $twig) {
 	
 	$registry = new VDSt\Entity\Registry($app['db']);
 	
@@ -71,12 +71,37 @@ $app->get('/start', function() use ($app, $twig) {
 // vdst route
 $app->get('/vdst', function() use ($app, $twig) {
 
-	$registry = new VDSt\Entity\Registry($app['db']);
+	$articles = VDSt\Entity\Article::fetchAll($app['db']);
 	
-	return $twig->render('geschichte.html.twig', array(
-		'registry' => $registry,
+	$assoc = array();
+	foreach ($articles as $article) {
+	    $assoc[$article->title] = $article;
+	}
+	
+	$vdstArticles = new Symfony\Component\HttpFoundation\ParameterBag($assoc);
+	
+	return $twig->render('vdst.html.twig', array(
+		'articles' => $vdstArticles,
 	));
 
+});
+
+$app->get('/galerie', function() use ($app, $twig) {
+    return $twig->render('construction.html.twig', array(
+        'page' => 'galerie'        
+    ));
+});
+
+$app->get('/wohnen', function() use ($app, $twig) {
+    return $twig->render('construction.html.twig', array(
+            'page' => 'wohnen'
+    ));
+});
+
+$app->get('/kontakt', function() use ($app, $twig) {
+    return $twig->render('construction.html.twig', array(
+            'page' => 'kontakt'
+    ));
 });
 
 // admin route
@@ -87,12 +112,30 @@ $app->get('/admin', function() use ($app, $twig) {
 	
 	return $twig->render('admin/program.html.twig', array(
 		'registry' => $registry,
-		'program' => $program
+		'program' => $program,
+	    'page' => 'start'
 	));
 
 });
 
-// save program/einstellungen
+// admin route
+$app->get('/admin/editor/{page}', function($page) use ($app, $twig) {
+
+    $registry = new VDSt\Entity\Registry($app['db']);
+    $program = VDSt\Entity\Program::fetchBySemester($app['db'], $registry->get('semester_title'));
+
+    return $twig->render('admin/program.html.twig', array(
+        'registry' => $registry,
+        'program' => $program
+    ));
+
+});
+
+/*
+ * SEMESTERPROGRAMM
+ */
+
+// save
 $app->post('/admin/program/save', function() use ($app) {
 	
 	$registry = new VDSt\Entity\Registry($app['db']);
@@ -104,7 +147,7 @@ $app->post('/admin/program/save', function() use ($app) {
 });
 
 // fetch program entry
-$app->post('/admin/program/entry/fetch/{id}', function($id) use ($app, $twig) {
+$app->post('/admin/program/fetch/{id}', function($id) use ($app, $twig) {
 	
 	$entry = VDSt\Entity\Program::fetchById($app['db'], $id);
 	
@@ -114,10 +157,32 @@ $app->post('/admin/program/entry/fetch/{id}', function($id) use ($app, $twig) {
 
 });
 
-// save program entry
-$app->post('/admin/program/entry/save', function() use ($app) {
+// update program entry
+$app->post('/admin/program/insert', function() use ($app) {
+    
+    $entry = new VDSt\Entity\Program();
+    
+    // TODO dublicate code
+    
+    $date = trim($app['request']->get('date'));
+    $time = trim($app['request']->get('time'));
+    $dateTime = \DateTime::createFromFormat('d.m.Y H:i', "{$date} {$time}");
+    
+    $entry->date = $dateTime;
+    $entry->text = trim($app['request']->get('text'));
+    $entry->importance = $app['request']->get('importance');
+    $entry->semester = $app['request']->get('semester');
+    
+    VDSt\Entity\Program::save($app['db'], $entry);
+    
+    return $app->redirect('/index.php/admin');
+    
+});
 
-	$entry = VDSt\Entity\Program::fetchById($app['db'], $app['request']->get('id'));
+// update program entry
+$app->post('/admin/program/update/{id}', function($id) use ($app) {
+
+	$entry = VDSt\Entity\Program::fetchById($app['db'], $id);
 	
 	$date = trim($app['request']->get('date'));
 	$time = trim($app['request']->get('time'));
@@ -135,12 +200,42 @@ $app->post('/admin/program/entry/save', function() use ($app) {
 });
 
 // delete program entry
-$app->post('/admin/program/entry/delete/{id}', function($id) use ($app) {
+$app->post('/admin/program/delete/{id}', function($id) use ($app) {
 	
 	VDSt\Entity\Program::delete($app['db'], $id);
 
 	return new Symfony\Component\HttpFoundation\Response('');
 	
+});
+
+// fetch editor
+$app->get('/admin/article/fetch/{title}', function($title) use ($app, $twig) {
+
+    $article = VDSt\Entity\Article::fetchByTitle($app['db'], $title);
+    
+    return $twig->render('admin/editor.html.twig', array(
+		'article' => $article,
+        'page' => $article->title
+	));
+});
+
+// save articles
+$app->post('/admin/article/save', function() use ($app, $twig) {
+
+    $postBag = $app['request']->request;
+    
+    $article = new VDSt\Entity\Article();
+    $article->id = $postBag->get('id');
+    $article->title = $postBag->get('title');
+    $article->content = $postBag->get('content');
+    $article->lastUpdate = new DateTime();
+    
+    VDSt\Entity\Article::save($app['db'], $article);
+
+    return $twig->render('admin/editor.html.twig', array(
+		'article' => $article,
+        'page' => $article->title
+	));
 });
 
 $app->run();

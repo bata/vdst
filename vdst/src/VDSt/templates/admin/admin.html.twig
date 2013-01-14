@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
-{% set active_page = 'vorstand' %}
+
+{% set mainActive = 'admin' %}
 
 {% block content %}
 
@@ -15,22 +16,24 @@
             <div id="subnav" class="well">
                 <ul class="nav nav-list">
                 
-                    <li class="active"><a href="#">Semesterprogramm</a></li>
+                    <li class="nav-header">Administrationsbereich</li>
+                    
+                    <li {% if page == 'start' %}class="active"{% endif %}><a href="/index.php/admin">Semesterprogramm</a></li>
                     <li class="divider"></li>
                     
                     <li class="nav-header">Über den VDSt</li>
-                    <li><a href="#">Geschichte</a></li>
-                    <li><a href="#">Prinzipien</a></li>
-                    <li><a href="#">Politische Bildung</a></li>
-                    <li><a href="#">Presse</a></li>
-                    <li><a href="#">Verband</a></li>
+                    <li {% if page == 'Geschichte' %}class="active"{% endif %}><a href="/index.php/admin/article/fetch/Geschichte">Geschichte</a></li>
+                    <li {% if page == 'Prinzipien' %}class="active"{% endif %}><a href="/index.php/admin/article/fetch/Prinzipien">Prinzipien</a></li>
+                    <li {% if page == 'Politische Bildung' %}class="active"{% endif %}><a href="/index.php/admin/article/fetch/Politische Bildung">Politische Bildung</a></li>
+                    <li {% if page == 'Presse' %}class="active"{% endif %}><a href="/index.php/admin/article/fetch/Presse">Presse</a></li>
+                    <li {% if page == 'Verband' %}class="active"{% endif %}><a href="/index.php/admin/article/fetch/Verband">Verband</a></li>
                     <li class="divider"></li>
                     
                     <li><a href="#">Galerie</a></li>
                     <li><a href="#">Wohnen</a></li>
                     <li><a href="#">Kontakt</a></li>
                     <li class="divider"></li>
-                    <li><a href="#">IT-Support</a></li>
+                    <li><a href="/index.php/start">Zur Startseite</a></li>
                 </ul>
             </div>
         </div>
@@ -47,6 +50,9 @@
 
         $(document).ready(function() {
 
+            // hide top-nav
+            $('#nav_wrapper').hide();
+        	
         	// toggle init
     		$('.legendToggle').click(function() {
 

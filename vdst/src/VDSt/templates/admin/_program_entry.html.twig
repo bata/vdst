@@ -4,7 +4,7 @@
     	<h3>Programmeintrag #{{ entry.id }} ({{ entry.semester }})</h3>
     </div>
     <div class="modal-body">
-    	<form id="entry" class="form-horizontal" action="/index.php/admin/program/entry/save" method="POST">
+    	<form id="entry" class="form-horizontal" action="/index.php/admin/program/update/{{ entry.id }}" method="POST">
 		    <div class="control-group">
 			    <label class="control-label" for="date">Datum</label>
 			    <div class="controls">
@@ -31,11 +31,10 @@
 			    	<label class="radio"><input name="importance" type="radio" value="ho" {{ entry.importance == 'ho' ? 'checked' : '' }}> Hochoffiziell (ho)</label>
 			    </div>
 		    </div>
-			<input type="hidden" name="id" value="{{ entry.id }}"/>
 			<input type="hidden" name="semester" value="{{ entry.semester }}"/>
 	    </form>
     </div>
     <div class="modal-footer">
-    	<a href="#" onclick="saveEntry();" class="btn btn-primary">Speichern</a>
+    	<a href="#" onclick="updateEntry();" class="btn btn-primary">Speichern</a>
     </div>
 </div>

@@ -3,40 +3,59 @@
 {% block admin_content %}
 
     <h2>Semesterprogramm</h2>
-
-    <form class="form-horizontal" action="/index.php/admin/save" method="POST">
+  
+    <fieldset>
+        <legend>Programmeinträge <span class="icon-minus-sign legendToggle"></span></legend>
+        <div class="toggleContent">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Datum</th>
+                        <th>Uhrzeit</th>
+                        <th>Text</th>
+                        <th>Wichtigkeit</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in program %}
+                    <tr id="entry_{{ entry.id }}">
+                        <td>#{{ entry.id }}</td>
+                        <td>{{ entry.date | date('d.m.Y') }}</td>
+                        <td>{{ entry.date | date('H:i') }}</td>
+                        <td>{{ entry.text }}</td>
+                        <td>{{ entry.importance }}</td>
+                        <td><a onclick="fetchEntry('{{ entry.id }}');" class="btn btn-small btn-primary">Bearbeiten</a> <a onclick="deleteEntry('{{ entry.id }}');" class="btn btn-small btn-danger">Löschen</a></td>
+                    </tr>
+                    {% endfor %}
+                    
+                    {# new entry #}
+                    <tr>
+                        <form id="new_entry" action="/index.php/admin/program/insert" method="POST">
+                            <td>&nbsp;</td>
+                            <td><input name="date" type="text" placeholder="z.B. 01.01.2000" class="input-small"/></td>
+            	        	<td><input name="time" type="text" placeholder="z.B. 20:15" class="input-small"/></td>
+            	        	<td><input name="text" type="text" class="input-small"/></td>
+            	        	<td>
+            	        	    <select name="importance" class="input-small">
+            	        	        <option value="io">inoffiziell (io)</option>
+            	        	        <option value="o">offiziell (o)</option>
+            	        	        <option value="ho">hochoffiziell (ho)</option>
+            	        	    </select>
+            	        	</td>
+            	        	<td>
+            	        	    <input type="hidden" name="semester" value="{{ registry.get('semester_title') }}"/>
+            	        	    <input type="submit" class="btn btn-small btn-success" value="Hinzufügen">
+        	        	    </td>
+    	        	    </form>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
         
-        <fieldset>
-            <legend>Programmeinträge <span class="icon-minus-sign legendToggle"></span></legend>
-            <div class="toggleContent">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Datum</th>
-                            <th>Uhrzeit</th>
-                            <th>Text</th>
-                            <th>Wichtigkeit</th>
-                            <th>&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in program %}
-                        <tr id="entry_{{ entry.id }}">
-                            <td>#{{ entry.id }}</td>
-                            <td>{{ entry.date | date('d.m.Y') }}</td>
-                            <td>{{ entry.date | date('H:i') }}</td>
-                            <td>{{ entry.text }}</td>
-                            <td>{{ entry.importance }}</td>
-                            <td><a onclick="fetchEntry('{{ entry.id }}');" class="btn btn-small btn-primary">Bearbeiten</a> <a onclick="deleteEntry('{{ entry.id }}');" class="btn btn-small btn-danger">Löschen</a></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <a onclick="newEntries();" class="btn btn-success">Hinzufügen</a>
-            </div>
-        </fieldset>
-        
+    <form class="form-horizontal" action="/index.php/admin/program/save" method="POST">
         <fieldset>
             <legend>Einstellungen <span class="icon-minus-sign legendToggle"></span></legend>
             <div class="toggleContent">
@@ -58,42 +77,7 @@
                 </div>
             </div>
         </fieldset>
-    
     </form>
-    
-    {# add entries modal #}
-    <div id="add" class="modal hide fade">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3>Programmeinträge hinzufügen</h3>
-        </div>
-        <div class="modal-body">
-            <form action="/index.php/admin/program/entry/add" method="POST">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Datum</th>
-                            <th>Zeit</th>
-                            <th>Text</th>
-                            <th>Wichtigkeit</th>
-                        </tr>
-                    </thead>
-            		<tbody>
-            	    	<tr>
-            	        	<td><input type="text"/></td>
-            	        	<td><input type="text"/></td>
-            	        	<td><input type="text"/></td>
-            	        	<td><input type="text"/></td>
-            	    	</tr>
-                	</tbody>
-            	</table>
-                <input type="hidden" name="semester" value="{{ registry.get('semester_title') }}"/>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <a href="#" onclick="saveEntry();" class="btn btn-primary">Speichern</a>
-        </div>
-    </div>
                     
 {% endblock %}
 
@@ -116,27 +100,24 @@
         {
             $('.modal').remove();
             
-            $.post('/index.php/admin/program/entry/fetch/' + id, function(html) {
+            $.post('/index.php/admin/program/fetch/' + id, function(html) {
                 $(html).modal('show');
             });
-        }
+        };
 
-        function saveEntry()
+        function insertEntry() {};
+        
+        function updateEntry()
         {
             $('#entry').submit();
-        }
+        };
 
         function deleteEntry(id)
         {
             $.post('/index.php/admin/program/entry/delete/' + id, function() {
                 $('#entry_' + id).remove();
             });
-        }
-
-        function newEntries()
-        {
-            $('#add').modal('show');
-        }
+        };
     
     </script>
     

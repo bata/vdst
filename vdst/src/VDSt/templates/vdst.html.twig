@@ -22,8 +22,8 @@
         <div class="tab-content">
         {% for item in subNav %}
             <div class="tab-pane {% if loop.first %} active {% endif %}" id="{{ item[0] }}">
-                <h3>{{ item[1] }}</h3>
-                <p>Blah</p>
+                <!-- <h3>{{ item[1] }}</h3> -->
+                {{ articles.get(item[1]).content | raw }}
             </div>
         {% endfor %}
         </div>
